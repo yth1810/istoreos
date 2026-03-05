@@ -1,0 +1,15 @@
+name: 编译 IStoreOS 固件
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 安装依赖
+        run: sudo apt-get update -y && sudo apt-get install -y build-essential libncurses5-dev zlib1g-dev gawk git gettext libssl-dev xsltproc wget unzip python3
+      - name: 更新 Feeds
+        run: ./scripts/feeds update -a && ./scripts/feeds install -a
+      - name: 生成配置
+        run: make defconfig
+      - name: 开始编译
+        run: make -j$(nproc)
